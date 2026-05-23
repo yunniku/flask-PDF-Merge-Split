@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Split Tool</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/split.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>✂️ PDF Split Tool</h2>
+
+    <!-- PDF 파일 선택 -->
+    <input
+        type="file"
+        id="pdfFile"
+        accept="application/pdf">
+
+    <!-- 페이지 범위 -->
+    <div class="page-group">
+
+        <input
+            type="number"
+            id="start"
+            placeholder="시작 페이지">
+
+        <input
+            type="number"
+            id="end"
+            placeholder="끝 페이지">
+
+    </div>
+
+    <!-- 실행 버튼 -->
+    <button id="splitBtn"
+            onclick="splitFile()">
+
+        ✂️ PDF 분할 시작
+
+    </button>
+
+    <!-- 로딩 -->
+    <div id="loading">
+
+        ⏳ PDF 분할 중...
+
+    </div>
+
+    <!-- 홈 버튼 -->
+    <a class="home-btn" href="/">
+
+        ⬅ 홈으로
+
+    </a>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/split.js') }}"></script>
+
+</body>
+</html>
