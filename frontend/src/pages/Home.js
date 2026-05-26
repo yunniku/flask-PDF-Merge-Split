@@ -9,6 +9,7 @@ function Home() {
       <div className="menu">
         <Link to="/merge" className="btn">🔗 PDF 병합</Link>
         <Link to="/split" className="btn">✂️ PDF 분할</Link>
+        <Link to="/bookmark-extract" className="btn">📑 북마크 추출</Link>
       </div>
     </div>
   );

@@ -1,15 +1,16 @@
 import os
 from flask import Flask, send_from_directory
 from flask_cors import CORS
-from routes.split_single import split_single_bp
 
 from routes.merge import merge_bp
 from routes.split import split_bp
+from routes.split_single import split_single_bp
 from routes.bookmark_split import bookmark_split_bp
+from routes.bookmark_extract import bookmark_extract_bp
+
 
 app = Flask(__name__)
 CORS(app)  # React(3000포트)에서 Flask(5000포트) 요청 허용
-app.register_blueprint(bookmark_split_bp)
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -17,7 +18,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # Blueprint 등록
 app.register_blueprint(merge_bp)
 app.register_blueprint(split_bp)
+app.register_blueprint(bookmark_split_bp)
 app.register_blueprint(split_single_bp)
+app.register_blueprint(bookmark_extract_bp)
 
 @app.route('/api/download/<filename>')
 def download(filename):

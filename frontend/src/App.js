@@ -5,7 +5,7 @@ import Split from "./pages/Split";
 import SplitRange from "./pages/SplitRange";
 import BookmarkSplit from "./pages/BookmarkSplit";
 import SplitSingle from "./pages/SplitSingle";
-
+import BookmarkExtract from "./pages/BookmarkExtract";
 
 function App() {
   return (
@@ -17,6 +17,7 @@ function App() {
         <Route path="/split/range" element={<SplitRange />} />
         <Route path="/split/bookmark" element={<BookmarkSplit />} />
         <Route path="/split/single" element={<SplitSingle />} />
+        <Route path="/bookmark-extract" element={<BookmarkExtract />} />
       </Routes>
     </BrowserRouter>
   );
