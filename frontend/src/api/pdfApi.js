@@ -1,5 +1,4 @@
-const BASE_URL = "http://localhost:5000";
-
+const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 export async function mergePdfs(files) {
   const formData = new FormData();
   files.forEach((file) => formData.append("files", file));
