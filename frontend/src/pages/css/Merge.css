@@ -6,7 +6,7 @@ body {
 }
 
 .container {
-    width: 700px;
+    width: 100%;
     margin: 40px auto;
     background: #ffffff;
     padding: 30px;
@@ -37,18 +37,40 @@ h2 {
     background: #fafbfc;
 }
 
+.file-label {
+    flex: 1;
+    padding: 12px;
+    border: 2px dashed #d8dee9;
+    border-radius: 12px;
+    background: #fafbfc;
+    cursor: pointer;
+    text-align: left;
+    display: block;
+}
+
+.file-label:hover {
+    background: #edf4ff;
+    border-color: #4a90e2;
+}
+
 .item {
+    display: flex;
+    align-items: center;
     padding: 12px 15px;
     margin-bottom: 8px;
     border-radius: 10px;
     background: #f7f9fc;
     border: 1px solid #e5e9f2;
-    cursor: pointer;
+    cursor: grab;
     transition: all 0.2s;
 }
 
 .item:hover {
     background: #edf4ff;
+}
+
+.item:active {
+    cursor: grabbing;
 }
 
 .mergeBtn {

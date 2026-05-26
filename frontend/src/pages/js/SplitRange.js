@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { splitPdf, getDownloadUrl } from "../../api/pdfApi";
+import "../css/global.css";
 import "../css/Split.css";
 
 function SplitRange() {

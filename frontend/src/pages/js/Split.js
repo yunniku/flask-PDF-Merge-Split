@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import "../css/global.css";
 import "../css/Split.css";
 
 function Split() {

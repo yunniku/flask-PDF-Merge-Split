@@ -1,12 +1,43 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { mergePdfs, getDownloadUrl } from "../../api/pdfApi";
+import "../css/global.css";
 import "../css/Merge.css";
 
 function Merge() {
   const [files, setFiles] = useState([]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const dragItem = useRef(null);
+  const dragOver = useRef(null);
+
+  const handleFileChange = (e) => {
+    const selected = Array.from(e.target.files);
+    setFiles(selected);
+    setResult(null);
+  };
+
+  const handleDragStart = (idx) => {
+    dragItem.current = idx;
+  };
+
+  const handleDragEnter = (idx) => {
+    dragOver.current = idx;
+  };
+
+  const handleDragEnd = () => {
+    const newFiles = [...files];
+    const draggedFile = newFiles.splice(dragItem.current, 1)[0];
+    newFiles.splice(dragOver.current, 0, draggedFile);
+    dragItem.current = null;
+    dragOver.current = null;
+    setFiles(newFiles);
+  };
+
+  const handleRemove = (idx) => {
+    const newFiles = files.filter((_, i) => i !== idx);
+    setFiles(newFiles);
+  };
 
   const handleMerge = async () => {
     if (files.length < 2) {
@@ -22,20 +53,55 @@ function Merge() {
   return (
     <div className="container">
       <h2>🔗 PDF 병합</h2>
+
       <div className="file-bar">
         <input
           type="file"
           accept=".pdf"
           multiple
-          onChange={(e) => setFiles(Array.from(e.target.files))}
+          onChange={handleFileChange}
+          style={{ display: "none" }}
+          id="fileInput"
         />
+        <label htmlFor="fileInput" className="file-label">
+          {files.length > 0 ? `📄 파일 ${files.length}개 선택됨` : "📂 파일 선택 (클릭)"}
+        </label>
       </div>
 
       {files.length > 0 && (
-        <div id="fileList">
-          {files.map((file, idx) => (
-            <div className="item" key={idx}>📄 {file.name}</div>
-          ))}
+        <div style={{ marginTop: "16px" }}>
+          <p style={{ fontSize: "13px", color: "#888", marginBottom: "8px" }}>
+            ↕ 드래그로 순서를 바꿀 수 있어요
+          </p>
+          <div id="fileList">
+            {files.map((file, idx) => (
+              <div
+                key={idx}
+                className="item"
+                draggable
+                onDragStart={() => handleDragStart(idx)}
+                onDragEnter={() => handleDragEnter(idx)}
+                onDragEnd={handleDragEnd}
+                onDragOver={(e) => e.preventDefault()}
+              >
+                <span style={{ marginRight: "8px", color: "#aaa" }}>☰</span>
+                <span style={{ flex: 1 }}>📄 {file.name}</span>
+                <button
+                  onClick={() => handleRemove(idx)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "#e74c3c",
+                    fontWeight: "bold",
+                    fontSize: "16px"
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
