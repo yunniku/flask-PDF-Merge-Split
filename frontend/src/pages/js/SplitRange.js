@@ -6,8 +6,8 @@ import "../css/Split.css";
 
 function SplitRange() {
   const [file, setFile] = useState(null);
-  const [start, setStart] = useState(1);
-  const [end, setEnd] = useState(1);
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 

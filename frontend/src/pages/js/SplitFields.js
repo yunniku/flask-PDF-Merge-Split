@@ -7,6 +7,7 @@ import "../css/Split.css";
 function SplitFields() {
   const [file, setFile] = useState(null);
   const [results, setResults] = useState([]);
+  const [checked, setChecked] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -18,6 +19,7 @@ function SplitFields() {
 
     setLoading(true);
     setResults([]);
+    setChecked([]);
     setMessage("");
 
     const formData = new FormData();
@@ -37,7 +39,36 @@ function SplitFields() {
     }
 
     setMessage(data.message);
-    setResults(data.results.map((r, idx) => ({ ...r, index: idx + 1 })));
+    const mapped = data.results.map((r, idx) => ({ ...r, index: idx + 1 }));
+    setResults(mapped);
+    setChecked(mapped.map(() => true));
+  };
+
+  const toggleAll = (e) => {
+    setChecked(checked.map(() => e.target.checked));
+  };
+
+  const toggleOne = (idx) => {
+    const newChecked = [...checked];
+    newChecked[idx] = !newChecked[idx];
+    setChecked(newChecked);
+  };
+
+  const handleExcel = () => {
+    const selected = results.filter((_, idx) => checked[idx]);
+    if (selected.length === 0) {
+      alert("선택된 항목이 없습니다");
+      return;
+    }
+    exportToExcel(
+      selected,
+      [
+        { header: "번호", key: "index" },
+        { header: "파일명", key: "title" },
+        { header: "페이지", key: "pages" },
+      ],
+      "split_fields.xlsx"
+    );
   };
 
   return (
@@ -65,22 +96,21 @@ function SplitFields() {
         <div style={{ marginTop: "20px" }}>
           <button
             className="splitBtn"
-            onClick={() => exportToExcel(
-              results,
-              [
-                { header: "번호", key: "index" },
-                { header: "파일명", key: "title" },
-                { header: "페이지", key: "pages" },
-              ],
-              "split_fields.xlsx"
-            )}
+            onClick={handleExcel}
             style={{ marginBottom: "12px" }}
           >
-            📊 Excel 내보내기
+            📊 선택 항목 Excel 내보내기
           </button>
           <table className="result-table">
             <thead>
               <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    onChange={toggleAll}
+                    checked={checked.every(Boolean)}
+                  />
+                </th>
                 <th>번호</th>
                 <th>파일명</th>
                 <th>페이지</th>
@@ -89,7 +119,14 @@ function SplitFields() {
             </thead>
             <tbody>
               {results.map((r, idx) => (
-                <tr key={idx}>
+                <tr key={idx} style={{ background: checked[idx] ? "#edf4ff" : "white" }}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={checked[idx]}
+                      onChange={() => toggleOne(idx)}
+                    />
+                  </td>
                   <td>{idx + 1}</td>
                   <td>{r.title}</td>
                   <td>{r.pages}</td>
