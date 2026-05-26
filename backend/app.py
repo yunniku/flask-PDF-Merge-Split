@@ -7,7 +7,7 @@ from routes.split import split_bp
 from routes.split_single import split_single_bp
 from routes.bookmark_split import bookmark_split_bp
 from routes.bookmark_extract import bookmark_extract_bp
-
+from routes.split_fields import split_fields_bp
 
 app = Flask(__name__)
 CORS(app)  # React(3000포트)에서 Flask(5000포트) 요청 허용
@@ -21,6 +21,7 @@ app.register_blueprint(split_bp)
 app.register_blueprint(bookmark_split_bp)
 app.register_blueprint(split_single_bp)
 app.register_blueprint(bookmark_extract_bp)
+app.register_blueprint(split_fields_bp)
 
 @app.route('/api/download/<filename>')
 def download(filename):

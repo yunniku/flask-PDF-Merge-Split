@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { getDownloadUrl } from "../api/pdfApi";
-import "./Split.css";
+import { getDownloadUrl } from "../../api/pdfApi";
+import "../css/Split.css";
 
 function BookmarkExtract() {
   const [file, setFile] = useState(null);

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { splitPdf, getDownloadUrl } from "../api/pdfApi";
-import "./Split.css";
+import { splitPdf, getDownloadUrl } from "../../api/pdfApi";
+import "../css/Split.css";
 
 function SplitRange() {
   const [file, setFile] = useState(null);

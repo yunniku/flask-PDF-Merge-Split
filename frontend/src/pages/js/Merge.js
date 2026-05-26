@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { mergePdfs, getDownloadUrl } from "../api/pdfApi";
-import "./Merge.css";
+import { mergePdfs, getDownloadUrl } from "../../api/pdfApi";
+import "../css/Merge.css";
 
 function Merge() {
   const [files, setFiles] = useState([]);

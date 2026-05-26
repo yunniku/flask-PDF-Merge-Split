@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { getDownloadUrl } from "../api/pdfApi";
-import "./Split.css";
+import { getDownloadUrl } from "../../api/pdfApi";
+import "../css/Split.css";
 
-function BookmarkSplit() {
+function SplitFields() {
   const [file, setFile] = useState(null);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ function BookmarkSplit() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch("http://localhost:5000/api/bookmark-split", {
+    const res = await fetch("http://localhost:5000/api/split-fields", {
       method: "POST",
       body: formData,
     });
@@ -41,7 +41,8 @@ function BookmarkSplit() {
 
   return (
     <div className="container">
-      <h2>🔖 북마크 기준 분할</h2>
+      <h2>🔧 필드 기반 분할</h2>
+      <p className="sub">SUB_ID / MODULE / ISO 필드를 읽어 자동으로 파일명을 생성해 분할해요</p>
 
       <div className="file-bar">
         <input
@@ -52,7 +53,7 @@ function BookmarkSplit() {
       </div>
 
       <button className="splitBtn" onClick={handleSplit} disabled={loading}>
-        {loading ? "분할 중..." : "🔖 북마크 기준 분할"}
+        {loading ? "분할 중..." : "🔧 필드 기반 분할"}
       </button>
 
       {loading && <p className="loading">⏳ 처리 중입니다...</p>}
@@ -65,7 +66,7 @@ function BookmarkSplit() {
             <thead>
               <tr>
                 <th>번호</th>
-                <th>북마크 제목</th>
+                <th>파일명</th>
                 <th>페이지</th>
                 <th>다운로드</th>
               </tr>
@@ -93,4 +94,4 @@ function BookmarkSplit() {
   );
 }
 
-export default BookmarkSplit;
+export default SplitFields;
