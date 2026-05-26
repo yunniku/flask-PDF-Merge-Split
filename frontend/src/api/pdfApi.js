@@ -1,4 +1,7 @@
+import * as XLSX from "xlsx";
+
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 export async function mergePdfs(files) {
   const formData = new FormData();
   files.forEach((file) => formData.append("files", file));
@@ -25,4 +28,19 @@ export async function splitPdf(file, start, end) {
 
 export function getDownloadUrl(path) {
   return `${BASE_URL}${path}`;
+}
+
+export function exportToExcel(results, columns, filename = "result.xlsx") {
+  const data = results.map((r) => {
+    const row = {};
+    columns.forEach((col) => {
+      row[col.header] = r[col.key];
+    });
+    return row;
+  });
+
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Result");
+  XLSX.writeFile(wb, filename);
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { getDownloadUrl } from "../../api/pdfApi";
+import { getDownloadUrl, exportToExcel } from "../../api/pdfApi";
 import "../css/global.css";
 import "../css/Split.css";
 
@@ -37,7 +37,7 @@ function SplitSingle() {
     }
 
     setMessage(data.message);
-    setResults(data.results);
+    setResults(data.results.map((r, idx) => ({ ...r, index: idx + 1 })));
   };
 
   return (
@@ -62,6 +62,21 @@ function SplitSingle() {
 
       {results.length > 0 && (
         <div style={{ marginTop: "20px" }}>
+          <button
+            className="splitBtn"
+            onClick={() => exportToExcel(
+              results,
+              [
+                { header: "번호", key: "index" },
+                { header: "파일명", key: "filename" },
+                { header: "페이지", key: "page" },
+              ],
+              "split_single.xlsx"
+            )}
+            style={{ marginBottom: "12px" }}
+          >
+            📊 Excel 내보내기
+          </button>
           <table className="result-table">
             <thead>
               <tr>
