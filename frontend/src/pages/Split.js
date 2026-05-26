@@ -9,6 +9,7 @@ function Split() {
       <div className="menu">
         <Link to="/split/range" className="btn">📄 페이지 범위 분할</Link>
         <Link to="/split/bookmark" className="btn">🔖 북마크 기준 분할</Link>
+        <Link to="/split/single" className="btn">📄 단일 페이지 분할</Link>
       </div>
       <Link to="/" className="home-btn">← 홈으로</Link>
     </div>

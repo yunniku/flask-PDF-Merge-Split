@@ -4,6 +4,8 @@ import Merge from "./pages/Merge";
 import Split from "./pages/Split";
 import SplitRange from "./pages/SplitRange";
 import BookmarkSplit from "./pages/BookmarkSplit";
+import SplitSingle from "./pages/SplitSingle";
+
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
         <Route path="/split" element={<Split />} />
         <Route path="/split/range" element={<SplitRange />} />
         <Route path="/split/bookmark" element={<BookmarkSplit />} />
+        <Route path="/split/single" element={<SplitSingle />} />
       </Routes>
     </BrowserRouter>
   );
