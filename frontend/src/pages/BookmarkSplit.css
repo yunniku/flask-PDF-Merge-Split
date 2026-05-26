@@ -1,0 +1,23 @@
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.result-table th {
+    background: #4a90e2;
+    color: white;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.result-table td {
+    padding: 10px;
+    border-bottom: 1px solid #e5e9f2;
+    font-size: 14px;
+}
+
+.result-table tr:hover {
+    background: #edf4ff;
+}

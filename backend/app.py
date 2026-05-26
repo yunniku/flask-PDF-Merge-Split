@@ -4,9 +4,11 @@ from flask_cors import CORS
 
 from routes.merge import merge_bp
 from routes.split import split_bp
+from routes.bookmark_split import bookmark_split_bp
 
 app = Flask(__name__)
 CORS(app)  # React(3000포트)에서 Flask(5000포트) 요청 허용
+app.register_blueprint(bookmark_split_bp)
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
