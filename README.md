@@ -24,7 +24,9 @@
 | **Backend** | Python 3.11, Flask, Flask-CORS |
 | **PDF 처리** | PyPDF, PyMuPDF (fitz) |
 | **Excel 처리** | openpyxl, xlsx (프론트) |
-| **배포** | Railway |
+| **배포 (서비스)** | Railway |
+| **배포 (인프라)** | AWS EC2, Docker, Docker Compose |
+| **자동화** | GitHub Actions (CI/CD) |
 
 ---
 
@@ -93,6 +95,7 @@ Storage
 │   ├── app.py                    Flask 앱 생성 + Blueprint 등록 + CORS
 │   ├── requirements.txt          Python 패키지 목록
 │   ├── Procfile                  Railway 배포 설정
+│   ├── Dockerfile                Docker 이미지 빌드 설정
 │   ├── routes/                   API 라우트 모음
 │   │   ├── merge.py              /api/merge
 │   │   ├── split.py              /api/split
@@ -105,6 +108,8 @@ Storage
 └── frontend/                     React 앱
     ├── package.json
     ├── .nvmrc                    Node 버전 고정 (20)
+    ├── Dockerfile                Docker 이미지 빌드 설정
+    ├── nginx.conf                Nginx 리버스 프록시 설정
     └── src/
         ├── App.js                라우터
         ├── api/
@@ -168,14 +173,35 @@ npm start
 # → http://localhost:3000
 ```
 
+### Docker (로컬)
+
+```bash
+# 프로젝트 루트에서
+docker-compose up --build
+# → http://localhost
+```
+
 ---
 
 ## 🚀 배포
+
+### Railway (서비스 운영)
+HTTPS 지원 및 안정적인 서비스 운영을 위해 사용
 
 ```
 git push → Railway 자동 배포
 ├── Backend  → flask-pdf-merge-split-production.up.railway.app
 └── Frontend → miraculous-love-production-f9db.up.railway.app
+```
+
+### AWS EC2 + Docker (인프라 경험)
+macOS 로컬 환경에서 개발 후 Docker로 컨테이너화하여 AWS EC2에 배포
+GitHub Actions로 CI/CD 파이프라인을 구축해 자동 배포 환경 구성
+
+```
+git push → GitHub Actions → EC2 자동 배포
+├── Backend  → Gunicorn + Flask (Docker 컨테이너)
+└── Frontend → Nginx + React (Docker 컨테이너)
 ```
 
 ---
