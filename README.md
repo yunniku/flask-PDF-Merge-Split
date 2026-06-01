@@ -12,7 +12,8 @@
 
 실무에서 배관 도면, ISO 도면, 시공 문서 등을 관리할 때 여러 PDF를 하나로 합치거나 특정 도면만 분리해야 하는 작업이 자주 발생했습니다. 기존에는 Adobe Acrobat으로 수작업 처리해야 해서 시간이 많이 소요됐습니다.
 
-이를 해결하기 위해 Python과 PyQt6로 데스크탑 프로그램을 먼저 개발했고, 이후 설치 없이 브라우저에서 바로 사용할 수 있도록 **React + Flask 기반 웹 서비스로 확장**했습니다.
+이를 해결하기 위해 Python과 PyQt6로 데스크탑 프로그램을 먼저 개발했고,
+이후 설치 없이 브라우저에서 바로 사용할 수 있도록 **React + Flask 기반 웹 서비스로 확장**했습니다.
 
 ---
 
@@ -24,9 +25,11 @@
 | **Backend** | Python 3.11, Flask, Flask-CORS |
 | **PDF 처리** | PyPDF, PyMuPDF (fitz) |
 | **Excel 처리** | openpyxl, xlsx (프론트) |
+| **컨테이너** | Docker, Docker Compose |
+| **웹 서버** | Nginx (리버스 프록시) |
 | **배포 (서비스)** | Railway |
-| **배포 (인프라)** | AWS EC2, Docker, Docker Compose |
-| **자동화** | GitHub Actions (CI/CD) |
+| **배포 (인프라)** | AWS EC2 (Amazon Linux 2023) |
+| **CI/CD** | GitHub Actions |
 
 ---
 
@@ -58,14 +61,14 @@
 
 ```
 Frontend (React)
-├── Home          기능 선택 메인 화면
-├── Merge         파일 선택 + 드래그 순서 변경 + 병합
-├── Split Hub     분할 방식 선택 화면
-│   ├── SplitRange      페이지 범위 분할
-│   ├── BookmarkSplit   북마크 기준 분할
-│   ├── SplitSingle     단일 페이지 분할
-│   └── SplitFields     필드 기반 분할
-└── BookmarkExtract     북마크 추출 → Excel 저장
+├── Home              기능 선택 메인 화면
+├── Merge             파일 선택 + 드래그 순서 변경 + 병합
+├── Split Hub         분할 방식 선택 화면
+│   ├── SplitRange        페이지 범위 분할
+│   ├── BookmarkSplit     북마크 기준 분할
+│   ├── SplitSingle       단일 페이지 분할
+│   └── SplitFields       필드 기반 분할
+└── BookmarkExtract   북마크 추출 → Excel 저장
 
          │  fetch (REST API / JSON)
          ↓
@@ -78,7 +81,7 @@ Backend (Flask)
 ├── /api/split-fields       필드 기반 분할
 └── /api/bookmark-extract   북마크 추출 → Excel
 
-         │  파일 저장/읽기
+         │  파일 저장 / 읽기
          ↓
 
 Storage
@@ -90,7 +93,10 @@ Storage
 ## 📁 프로젝트 구조
 
 ```
-2. PDF_MAS/
+PDF_MAS/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml            GitHub Actions CI/CD
 ├── backend/                      Flask API 서버
 │   ├── app.py                    Flask 앱 생성 + Blueprint 등록 + CORS
 │   ├── requirements.txt          Python 패키지 목록
@@ -103,7 +109,7 @@ Storage
 │   │   ├── split_single.py       /api/split-single
 │   │   ├── split_fields.py       /api/split-fields
 │   │   └── bookmark_extract.py   /api/bookmark-extract
-│   └── uploads/                  업로드/결과 파일 저장
+│   └── uploads/                  업로드 / 결과 파일 저장
 │
 └── frontend/                     React 앱
     ├── package.json
@@ -125,7 +131,7 @@ Storage
 
 ```
 사용자
-  ↓ 브라우저에서 파일 선택
+  ↓ 브라우저에서 PDF 파일 선택
 React (Frontend)
   ↓ fetch POST (FormData)
 Flask API (Backend)
@@ -139,51 +145,106 @@ React에서 다운로드 링크 표시
 
 ---
 
-## 🚀 로컬 실행 방법
+## 🚀 설치 방법
 
-### Backend
+### 사전 요구사항
+
+- Python 3.11 이상
+- Node.js 20 이상 (`.nvmrc` 기준)
+- pip3, npm
+- Docker / Docker Compose (Docker 실행 시)
+
+### 방법 1 — 로컬 직접 실행
+
+#### 1. 레포지토리 클론
 
 ```bash
-# 1. 백엔드 폴더로 이동
+git clone https://github.com/yunniku/flask-PDF-Merge-Split.git
+cd flask-PDF-Merge-Split
+```
+
+#### 2. Backend 실행
+
+```bash
+# 백엔드 폴더로 이동
 cd backend
 
-# 2. 가상환경 생성 및 활성화
+# 가상환경 생성 및 활성화
 python3 -m venv venv
 source venv/bin/activate
 
-# 3. 패키지 설치
+# 패키지 설치
 pip3 install -r requirements.txt
 
-# 4. 서버 실행
+# 서버 실행
 python3 app.py
 # → http://localhost:5000
 ```
 
-### Frontend
+#### 3. Frontend 실행 (별도 터미널)
 
 ```bash
-# 1. 프론트엔드 폴더로 이동
+# 프론트엔드 폴더로 이동
 cd frontend
 
-# 2. 패키지 설치
+# 패키지 설치
 npm install
 
-# 3. 서버 실행
+# 개발 서버 실행
 npm start
 # → http://localhost:3000
 ```
 
-### Docker (로컬)
-
-```bash
-# 프로젝트 루트에서
-docker-compose up --build
-# → http://localhost
-```
+> 브라우저에서 `http://localhost:3000` 접속
 
 ---
 
-## 🚀 배포
+### 방법 2 — Docker로 실행 (환경 통일)
+
+```bash
+# 프로젝트 루트에서 한 번에 실행
+docker-compose up --build
+# → http://localhost
+
+# 백그라운드 실행
+docker-compose up -d --build
+
+# 종료
+docker-compose down
+```
+
+> Docker 실행 시 Frontend(Nginx) + Backend(Flask) 컨테이너가 함께 올라옵니다.
+
+---
+
+## 📖 사용법
+
+### PDF 병합
+1. 상단 메뉴에서 **PDF 병합** 선택
+2. PDF 파일 2개 이상 선택
+3. 드래그 앤 드롭으로 순서 조정, 필요 없는 파일은 개별 삭제
+4. **병합** 버튼 클릭 → 결과 파일 다운로드
+
+### PDF 분할
+1. 상단 메뉴에서 **PDF 분할** 선택
+2. 분할 방식 선택:
+   - **페이지 범위** — 시작/끝 페이지 직접 입력
+   - **북마크 기준** — 북마크 단위로 자동 분할
+   - **단일 페이지** — 페이지 한 장씩 개별 파일
+   - **필드 기반** — SUB_ID / MODULE / ISO 필드 자동 인식 후 분할
+3. PDF 파일 업로드 후 분할 실행
+4. 결과 목록에서 체크박스로 원하는 파일 선택
+5. **다운로드** 또는 **Excel로 내보내기** 클릭
+
+### 북마크 추출
+1. 상단 메뉴에서 **북마크 추출** 선택
+2. PDF 파일 업로드
+3. 추출된 북마크 목록 확인
+4. **Excel로 저장** 클릭
+
+---
+
+## 🚀 배포 구조
 
 ### Railway (서비스 운영)
 HTTPS 지원 및 안정적인 서비스 운영을 위해 사용
@@ -194,15 +255,58 @@ git push → Railway 자동 배포
 └── Frontend → miraculous-love-production-f9db.up.railway.app
 ```
 
-### AWS EC2 + Docker (인프라 경험)
-macOS 로컬 환경에서 개발 후 Docker로 컨테이너화하여 AWS EC2에 배포
-GitHub Actions로 CI/CD 파이프라인을 구축해 자동 배포 환경 구성
+### AWS EC2 + Docker + GitHub Actions (CI/CD 인프라 경험)
+macOS 로컬에서 개발 후 Docker로 컨테이너화, AWS EC2에 배포
+GitHub Actions CI/CD 파이프라인으로 `git push` 한 번에 자동 배포
 
 ```
-git push → GitHub Actions → EC2 자동 배포
-├── Backend  → Gunicorn + Flask (Docker 컨테이너)
-└── Frontend → Nginx + React (Docker 컨테이너)
+git push (main)
+  → GitHub Actions 실행
+    → EC2 SSH 접속
+      → git pull
+        → docker-compose up --build -d
 ```
+
+```yaml
+# .github/workflows/deploy.yml
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: EC2 배포
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ~/flask-PDF-Merge-Split
+            git pull origin main
+            docker-compose up --build -d
+```
+
+---
+
+## 🤝 기여 방법
+
+1. 이 레포를 **Fork** 하세요
+2. 새 브랜치를 생성하세요
+   ```bash
+   git checkout -b feature/새기능
+   ```
+3. 변경사항을 커밋하세요
+   ```bash
+   git commit -m "feat: 새 기능 추가"
+   ```
+4. 브랜치에 Push 하세요
+   ```bash
+   git push origin feature/새기능
+   ```
+5. **Pull Request**를 열어주세요
 
 ---
 
@@ -213,3 +317,4 @@ git push → GitHub Actions → EC2 자동 배포
 | **개발 기간** | 2026 |
 | **개발 인원** | 1인 개발 |
 | **버전** | Ver 1.0 |
+| **GitHub** | [yunniku](https://github.com/yunniku) |

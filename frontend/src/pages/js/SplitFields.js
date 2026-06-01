@@ -145,6 +145,6 @@ function SplitFields() {
       <Link to="/split" className="home-btn">← 분할 메뉴로</Link>
     </div>
   );
-}
+} 
 
 export default SplitFields;
