@@ -1,63 +1,74 @@
-# 📄 PDF MAS — PDF 관리 시스템
+# PDF MAS (PDF Management & Automation System)
 
-> React + Flask 기반의 PDF 병합, 분할, 북마크 관리 웹 서비스
+Flask REST API + React 기반 PDF 병합 / 분할 / 북마크 관리 웹 서비스
 
-🔗 **배포 링크**: [https://miraculous-love-production-f9db.up.railway.app](https://miraculous-love-production-f9db.up.railway.app)
+## 프로젝트 정보
 
----
+- 개발 기간: 2026  
+- 개발 인원: 1인  
+- 주요 기술: Flask, React, PyPDF, PyMuPDF, Docker, GitHub Actions  
 
-## 📌 프로젝트 소개
+- GitHub  
+  - https://github.com/yunniku/flask-PDF-Merge-Split  
 
-**PDF MAS**는 PDF 병합, 분할, 북마크 관리 기능을 제공하는 PDF 관리 시스템입니다.
-
-실무에서 배관 도면, ISO 도면, 시공 문서 등을 관리할 때 여러 PDF를 하나로 합치거나 특정 도면만 분리해야 하는 작업이 자주 발생했습니다. 기존에는 Adobe Acrobat으로 수작업 처리해야 해서 시간이 많이 소요됐습니다.
-
-이를 해결하기 위해 Python과 PyQt6로 데스크탑 프로그램을 먼저 개발했고,
-이후 설치 없이 브라우저에서 바로 사용할 수 있도록 **React + Flask 기반 웹 서비스로 확장**했습니다.
-
----
-
-## 🛠 기술 스택
-
-| 분류 | 기술 |
-|------|------|
-| **Frontend** | React, React Router, JavaScript, CSS |
-| **Backend** | Python 3.11, Flask, Flask-CORS |
-| **PDF 처리** | PyPDF, PyMuPDF (fitz) |
-| **Excel 처리** | openpyxl, xlsx (프론트) |
-| **컨테이너** | Docker, Docker Compose |
-| **웹 서버** | Nginx (리버스 프록시) |
-| **배포 (서비스)** | Railway |
-| **배포 (인프라)** | AWS EC2 (Amazon Linux 2023) |
-| **CI/CD** | GitHub Actions |
+- 배포  
+  - https://miraculous-love-production-f9db.up.railway.app  
 
 ---
 
-## ✨ 주요 기능
+## 1. 프로젝트 개요
+실무에서 배관 도면(ISO), 시공 문서, 검토 자료를 다루는 과정에서 PDF 병합, 분할, 특정 도면 추출 작업이 반복적으로 발생했습니다. 기존에는 Adobe Acrobat을 활용한 수작업 방식으로 처리했으며, 도면 수가 많을 경우 작업 시간이 크게 증가하는 문제가 있었습니다.
 
-### PDF 병합
-- 여러 PDF 파일 선택 후 하나로 병합
-- 드래그 앤 드롭으로 병합 순서 변경
-- 파일 개별 삭제 가능
+이러한 비효율을 해결하기 위해 PDF 병합 / 분할 / 북마크 추출 기능을 하나의 웹 서비스로 통합한 PDF 자동화 시스템을 개발했습니다.
 
-### PDF 분할
-- **페이지 범위 분할** — 원하는 페이지 범위만 추출
-- **북마크 기준 분할** — 북마크 단위로 자동 분할
-- **단일 페이지 분할** — 페이지 한 장씩 개별 파일로 분리
-- **필드 기반 분할** — SUB_ID / MODULE / ISO 필드를 읽어 자동 파일명 생성 후 분할
+초기에는 Python 기반 PyQt6 데스크탑 도구로 구현했으나, 설치 없이 어디서든 사용할 수 있는 환경이 필요하다는 요구에 따라 Flask REST API와 React 기반 웹 서비스로 구조를 전환했습니다.
 
-### 북마크 추출
-- PDF 북마크 목록 추출
-- Excel 파일로 저장
-
-### 공통 기능
-- 분할 결과 체크박스로 개별 선택
-- 선택 항목만 Excel로 내보내기
-- 반응형 디자인 (모바일 / PC 대응)
+기존 데스크탑에서 검증된 PDF 처리 로직(PyPDF, PyMuPDF)을 그대로 백엔드로 이식하고, React를 통해 파일 드래그앤드롭, 순서 변경, 선택 기반 처리 기능을 구현하여 웹 환경에서도 동일한 사용성을 유지하도록 설계했습니다.
 
 ---
 
-## 🏗 아키텍처
+## 2. 기술 스택
+| 분류 | 기술 | 선택 이유 |
+|------|------|-----------|
+| Backend | Python 3.11, Flask | PDF 처리 로직을 API 형태로 제공하고, 파일 업로드/다운로드 기반 서비스 구조를 구현하기 위해 선택 |
+| Frontend | React | 파일 업로드, 드래그앤드롭, 비동기 처리 등 동적인 UI를 구현하기 위해 선택 |
+| PDF 처리 | PyPDF | PDF 병합, 분할 등 문서 구조 변경 작업에 최적화되어 있어 사용 |
+| PDF 분석 | PyMuPDF (fitz) | 텍스트 추출 및 좌표 기반 데이터 분석 기능을 활용하기 위해 사용 |
+| File Export | openpyxl | 북마크 및 추출 데이터를 Excel 파일로 저장하기 위해 사용 |
+| Infra | Docker, Docker Compose | 개발/배포 환경을 동일하게 유지하고 서비스 단위로 컨테이너화하기 위해 사용 |
+| Web Server | Nginx | React 정적 파일 서빙 및 Flask API 요청을 안정적으로 라우팅하기 위해 사용 |
+| CI/CD | GitHub Actions | 코드 변경 시 자동 배포 파이프라인을 구성하기 위해 사용 |
+
+---
+
+## 3. 주요 기능
+
+### 3-1. PDF 병합
+- 여러 PDF 파일을 하나의 파일로 병합
+- 드래그앤드롭으로 병합 순서 변경
+- 선택 파일 개별 삭제
+
+### 3-2. PDF 분할
+- 페이지 범위 기준 분할 (시작/끝 페이지 지정)
+- 북마크 기준 자동 분할
+- 단일 페이지 분할 (1페이지씩 분리)
+- 필드 기반 분할 (SUB_ID / MODULE / ISO 기반 자동 파일명 생성)
+
+### 3-3. 북마크 관리
+- PDF 내부 북마크 추출
+- Excel 파일로 저장하여 관리 가능
+
+### 3-4. 공통 기능
+- 체크박스를 통한 결과 파일 선택
+- 선택 항목만 다운로드 가능
+- 반응형 UI 지원 (PC / 모바일)
+
+---
+
+## 4. 시스템 구조
+PDF MAS는 React 기반 프론트엔드와 Flask REST API 백엔드를 분리한 SPA 구조로 설계되었습니다.  
+
+프론트엔드는 사용자 인터페이스와 파일 선택 및 업로드를 담당하고, 백엔드는 PDF 처리 로직(PyPDF, PyMuPDF)을 담당하는 구조입니다.
 
 ```
 Frontend (React)
@@ -67,204 +78,122 @@ Frontend (React)
 │   ├── SplitRange        페이지 범위 분할
 │   ├── BookmarkSplit     북마크 기준 분할
 │   ├── SplitSingle       단일 페이지 분할
-│   └── SplitFields       필드 기반 분할
+│   └── SplitFields       필드 기반 분할 (실무 핵심)
 └── BookmarkExtract   북마크 추출 → Excel 저장
 
-         │  fetch (REST API / JSON)
-         ↓
+        │  fetch POST (FormData)
+        ↓
 
 Backend (Flask)
-├── /api/merge              PDF 병합
-├── /api/split              페이지 범위 분할
-├── /api/bookmark-split     북마크 기준 분할
-├── /api/split-single       단일 페이지 분할
-├── /api/split-fields       필드 기반 분할
-└── /api/bookmark-extract   북마크 추출 → Excel
+├── /api/merge              PDF 병합       → PyPDF
+├── /api/split              페이지 범위 분할 → PyPDF
+├── /api/bookmark-split     북마크 기준 분할 → PyMuPDF
+├── /api/split-single       단일 페이지 분할 → PyPDF
+├── /api/split-fields       필드 기반 분할  → PyMuPDF (좌표 기반 텍스트 추출)
+└── /api/bookmark-extract   북마크 추출     → PyMuPDF → openpyxl
 
-         │  파일 저장 / 읽기
-         ↓
+        │  파일 저장 / 읽기
+        ↓
 
 Storage
-└── uploads/    업로드 파일 + 처리 결과 저장
+└── uploads/    업로드 파일 + 처리 결과 임시 저장
 ```
+
+### 4-1 데이터 흐름
+```
+사용자 → PDF 파일 선택
+  → React: fetch POST (FormData) 로 Flask 전송
+    → Flask: PyPDF / PyMuPDF로 처리
+      → uploads/ 저장 → download_url 반환 (JSON)
+        → React: 다운로드 링크 표시
+          → 사용자 파일 다운로드
+```
+
+### 4-2. 구조 설계 핵심 포인트
+- 프론트엔드와 백엔드를 완전히 분리한 SPA 구조
+
+- Flask는 UI 없이 REST API 서버 역할만 수행
+
+- PDF 처리 로직은 기존 PyQt 데스크탑 버전에서 재사용
+
+- PyPDF / PyMuPDF를 기능 기준으로 분리하여 안정성과 성능 확보
+
+- 파일 기반 처리 구조로 대용량 PDF 작업 대응
 
 ---
 
-## 📁 프로젝트 구조
+## 5. 핵심 구현 포인트
 
-```
-PDF_MAS/
-├── .github/
-│   └── workflows/
-│       └── deploy.yml            GitHub Actions CI/CD
-├── backend/                      Flask API 서버
-│   ├── app.py                    Flask 앱 생성 + Blueprint 등록 + CORS
-│   ├── requirements.txt          Python 패키지 목록
-│   ├── Procfile                  Railway 배포 설정
-│   ├── Dockerfile                Docker 이미지 빌드 설정
-│   ├── routes/                   API 라우트 모음
-│   │   ├── merge.py              /api/merge
-│   │   ├── split.py              /api/split
-│   │   ├── bookmark_split.py     /api/bookmark-split
-│   │   ├── split_single.py       /api/split-single
-│   │   ├── split_fields.py       /api/split-fields
-│   │   └── bookmark_extract.py   /api/bookmark-extract
-│   └── uploads/                  업로드 / 결과 파일 저장
-│
-└── frontend/                     React 앱
-    ├── package.json
-    ├── .nvmrc                    Node 버전 고정 (20)
-    ├── Dockerfile                Docker 이미지 빌드 설정
-    ├── nginx.conf                Nginx 리버스 프록시 설정
-    └── src/
-        ├── App.js                라우터
-        ├── api/
-        │   └── pdfApi.js         Flask API 호출 함수 모음
-        └── pages/
-            ├── js/               페이지 컴포넌트
-            └── css/              스타일 파일
+### 5-1. 필드 기반 분할 (실무 자동화 핵심 로직)
+실무에서 반복적으로 수행되던 도면 PDF 분할 작업을 자동화한 기능입니다.  
+기존에는 도면 내 SUB_ID, MODULE, ISO 등의 필드 정보를 사람이 직접 확인하고 파일을 수동으로 분리해야 했기 때문에 작업 시간이 많이 소요되는 문제가 있었습니다.
+
+이를 해결하기 위해 PyMuPDF를 활용하여 PDF 페이지 내 좌표 기반 텍스트를 추출하고, 특정 필드 값을 파싱하여 파일명을 자동 생성한 뒤 분할하도록 구현했습니다.
+
+```python
+import fitz  # PyMuPDF
+
+doc = fitz.open(pdf_path)
+
+for page in doc:
+    blocks = page.get_text("blocks")
+
+    for block in blocks:
+        # SUB_ID / MODULE / ISO 등 필드 값 추출
+        field_value = parse_field(block[4])
+
+        # 필드 기반 파일명 생성 및 분할 처리
 ```
 
----
+이 로직을 처음에는 PyQt GUI에서 구현했고, Flask REST API 구조로 이식하여 웹 환경에서도 동일하게 동작하도록 설계했습니다.
 
-## 📊 데이터 흐름
+### 5-2. React FormData 기반 파일 업로드 및 비동기 처리
+PDF 파일은 일반 JSON 방식으로는 서버에 전송할 수 없기 때문에, FormData를 활용한 파일 업로드 구조로 설계했습니다.  
+이를 통해 프론트엔드에서 파일을 안정적으로 전송하고, Flask 백엔드에서 이를 처리할 수 있도록 구현했습니다.
 
-```
-사용자
-  ↓ 브라우저에서 PDF 파일 선택
-React (Frontend)
-  ↓ fetch POST (FormData)
-Flask API (Backend)
-  ↓ PDF 처리 (PyPDF / PyMuPDF)
-uploads/ 폴더 저장
-  ↓ download_url 반환 (JSON)
-React에서 다운로드 링크 표시
-  ↓
-사용자 파일 다운로드
-```
+React에서는 fetch API를 사용하여 FormData에 파일을 담아 전송하고, Flask에서는 request.files를 통해 업로드된 파일을 수신합니다.
 
----
+```javascript
+// React: FormData 기반 파일 업로드
+const formData = new FormData()
+formData.append('files', file)
 
-## 🚀 설치 방법
+const res = await fetch('/api/merge', {
+  method: 'POST',
+  body: formData
+})
 
-### 사전 요구사항
-
-- Python 3.11 이상
-- Node.js 20 이상 (`.nvmrc` 기준)
-- pip3, npm
-- Docker / Docker Compose (Docker 실행 시)
-
-### 방법 1 — 로컬 직접 실행
-
-#### 1. 레포지토리 클론
-
-```bash
-git clone https://github.com/yunniku/flask-PDF-Merge-Split.git
-cd flask-PDF-Merge-Split
+const data = await res.json()
+// 다운로드 URL 반환 및 화면 표시
 ```
 
-#### 2. Backend 실행
+# Flask: 업로드 파일 수신 및 처리
+```python
+@merge_bp.route('/api/merge', methods=['POST'])
+def merge_pdfs():
+    files = request.files.getlist('files')
 
-```bash
-# 백엔드 폴더로 이동
-cd backend
+    merger = PdfMerger()
+    for f in files:
+        merger.append(f)
 
-# 가상환경 생성 및 활성화
-python3 -m venv venv
-source venv/bin/activate
-
-# 패키지 설치
-pip3 install -r requirements.txt
-
-# 서버 실행
-python3 app.py
-# → http://localhost:5000
+    # 병합 결과 저장 후 다운로드 URL 반환
+    return jsonify({"download_url": result_url})
 ```
 
-#### 3. Frontend 실행 (별도 터미널)
+이 구조를 통해 파일 업로드 → 서버 처리 → 결과 파일 반환까지의 전체 흐름을 비동기 방식으로 처리할 수 있도록 구성했습니다.
 
-```bash
-# 프론트엔드 폴더로 이동
-cd frontend
+### 5-3. Docker 기반 배포 및 GitHub Actions CI/CD 자동화
+로컬(macOS) 개발 환경에서 Docker를 활용해 애플리케이션을 컨테이너화하고, 운영 환경과 동일한 실행 구조를 구성했습니다.  
+이를 통해 환경 차이로 인한 배포 오류를 최소화하고, 안정적인 배포 구조를 확보했습니다.
 
-# 패키지 설치
-npm install
-
-# 개발 서버 실행
-npm start
-# → http://localhost:3000
-```
-
-> 브라우저에서 `http://localhost:3000` 접속
-
----
-
-### 방법 2 — Docker로 실행 (환경 통일)
-
-```bash
-# 프로젝트 루트에서 한 번에 실행
-docker-compose up --build
-# → http://localhost
-
-# 백그라운드 실행
-docker-compose up -d --build
-
-# 종료
-docker-compose down
-```
-
-> Docker 실행 시 Frontend(Nginx) + Backend(Flask) 컨테이너가 함께 올라옵니다.
-
----
-
-## 📖 사용법
-
-### PDF 병합
-1. 상단 메뉴에서 **PDF 병합** 선택
-2. PDF 파일 2개 이상 선택
-3. 드래그 앤 드롭으로 순서 조정, 필요 없는 파일은 개별 삭제
-4. **병합** 버튼 클릭 → 결과 파일 다운로드
-
-### PDF 분할
-1. 상단 메뉴에서 **PDF 분할** 선택
-2. 분할 방식 선택:
-   - **페이지 범위** — 시작/끝 페이지 직접 입력
-   - **북마크 기준** — 북마크 단위로 자동 분할
-   - **단일 페이지** — 페이지 한 장씩 개별 파일
-   - **필드 기반** — SUB_ID / MODULE / ISO 필드 자동 인식 후 분할
-3. PDF 파일 업로드 후 분할 실행
-4. 결과 목록에서 체크박스로 원하는 파일 선택
-5. **다운로드** 또는 **Excel로 내보내기** 클릭
-
-### 북마크 추출
-1. 상단 메뉴에서 **북마크 추출** 선택
-2. PDF 파일 업로드
-3. 추출된 북마크 목록 확인
-4. **Excel로 저장** 클릭
-
----
-
-## 🚀 배포 구조
-
-### Railway (서비스 운영)
-HTTPS 지원 및 안정적인 서비스 운영을 위해 사용
-
-```
-git push → Railway 자동 배포
-├── Backend  → flask-pdf-merge-split-production.up.railway.app
-└── Frontend → miraculous-love-production-f9db.up.railway.app
-```
-
-### AWS EC2 + Docker + GitHub Actions (CI/CD 인프라 경험)
-macOS 로컬에서 개발 후 Docker로 컨테이너화, AWS EC2에 배포
-GitHub Actions CI/CD 파이프라인으로 `git push` 한 번에 자동 배포
+또한 GitHub Actions를 활용하여 main 브랜치에 push가 발생하면 EC2 서버로 자동 배포되도록 CI/CD 파이프라인을 구축했습니다.
 
 ```
 git push (main)
   → GitHub Actions 실행
     → EC2 SSH 접속
-      → git pull
-        → docker-compose up --build -d
+      → git pull → docker-compose up --build -d
 ```
 
 ```yaml
@@ -281,40 +210,41 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd ~/flask-PDF-Merge-Split
             git pull origin main
             docker-compose up --build -d
 ```
+이 구조를 통해 코드 변경 → 빌드 → 배포 과정을 자동화하여 수동 배포 작업을 제거하고, 배포 안정성과 반복 작업 효율을 크게 개선했습니다.
 
 ---
 
-## 🤝 기여 방법
+## 7. 배포 구조
+### 7-1. Railway (실서비스)
+Flask 백엔드와 React 프론트를 각각 Railway 서비스로 분리 배포하여 운영
 
-1. 이 레포를 **Fork** 하세요
-2. 새 브랜치를 생성하세요
-   ```bash
-   git checkout -b feature/새기능
-   ```
-3. 변경사항을 커밋하세요
-   ```bash
-   git commit -m "feat: 새 기능 추가"
-   ```
-4. 브랜치에 Push 하세요
-   ```bash
-   git push origin feature/새기능
-   ```
-5. **Pull Request**를 열어주세요
+### 7-2. AWS EC2 (CI/CD 경험)
+Docker + Nginx + GitHub Actions를 활용하여 CI/CD 자동 배포 파이프라인을 구축하였으며,  
+git push 기반 자동 배포 환경을 구성하여 운영 효율성을 개선함
 
 ---
 
-## 👨‍💻 개발자
+## 8. AI 활용 내역
+**직접 설계 및 구현**
+- 실무 도면 PDF에서 SUB_ID / MODULE / ISO 필드 추출 로직 (PyMuPDF 좌표 기반)
+- PyPDF / PyMuPDF 역할 분리 설계 (구조 변경 vs 분석 처리)
+- Flask Blueprint 기반 API 구조 설계
+- React FormData 파일 업로드 및 다운로드 URL 반환 흐름 구현
+- Docker Compose 기반 (Flask + React + Nginx) 컨테이너 구성
+- GitHub Actions CI/CD 파이프라인 구축 (EC2 자동 배포)
+- Railway 서비스 배포 구성
 
-| 항목 | 내용 |
-|------|------|
-| **개발 기간** | 2026 |
-| **개발 인원** | 1인 개발 |
-| **버전** | Ver 1.0 |
-| **GitHub** | [yunniku](https://github.com/yunniku) |
+**AI 보조 활용**
+- docker-compose 네트워크 구성 및 오류 원인 분석
+- Nginx 리버스 프록시 (/api/ 라우팅) 설정 검토
+- GitHub Actions SSH 배포 스크립트 구성 보조
+- CORS 이슈 디버깅 방향 검토
+- README 구조 및 문서화 초안 정리
+
+---
