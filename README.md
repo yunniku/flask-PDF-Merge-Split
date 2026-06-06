@@ -140,7 +140,7 @@ for page in doc:
         # 필드 기반 파일명 생성 및 분할 처리
 ```
 
-이 로직을 처음에는 PyQt GUI에서 구현했고, Flask REST API 구조로 이식하여 웹 환경에서도 동일하게 동작하도록 설계했습니다.
+PyQt GUI에서 구현 후 Flask REST API 구조로 이식하여 웹 환경에서도 동일하게 동작하도록 설계
 
 ### 5-2. React FormData 기반 파일 업로드 및 비동기 처리
 PDF 파일은 일반 JSON 방식으로는 서버에 전송할 수 없기 때문에, FormData를 활용한 파일 업로드 구조로 설계했습니다.  
